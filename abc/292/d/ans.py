@@ -1,5 +1,6 @@
 class UnionFind:
     def __init__(self, n):
+        self.n = n
         self.parent = [-1] * (n+1)
         self.rank = [0] * (n+1)
         self.edge = [0] * (n+1)
@@ -9,7 +10,8 @@ class UnionFind:
         if self.parent[x] == -1:
             return x
         else:
-            return self.root(self.parent[x])
+            self.parent[x] = self.root(self.parent[x])
+            return self.parent[x]
 
     def unite(self, x, y):
         rx = self.root(x)
@@ -28,8 +30,8 @@ class UnionFind:
         if self.rank[rx] == self.rank[ry]:
             self.rank[rx] += 1
 
-        self.edge[rx] += 1
-        self.size[rx] += 1
+        self.edge[rx] += self.edge[ry] + 1
+        self.size[rx] += self.size[ry]
 
         return True
 
@@ -54,7 +56,7 @@ uf = UnionFind(N)
 for side in sides:
     uf.unite(side[0], side[1])
 
-for i in range(N+1):
+for i in range(1, N+1):
     if uf.tree_size(i) != uf.edges(i):
         print("No")
         exit()
